@@ -525,6 +525,23 @@
         bounds_group.addLayer(layer_ZoneA_6);
         map.addLayer(layer_ZoneA_6);
         setBounds();
+
+		var baseMaps = { "แผนที่พื้นฐาน (OSM)": layer_OpenStreetMap_0 };
+var overlayMaps = {
+    "ขอบเขตเทศบาล": layer_Municipal_Boundary_1,
+    "โครงข่ายถนน": layer_gis_road_2,
+    "เส้นทางน้ำ": layer_gis_waterway_3,
+    "ชุมชน": layer_community_Boundary_4,
+    "พิกัด Zone A (CCTV)": layer_ZoneA_6
+};
+L.control.layers(baseMaps, overlayMaps, {collapsed: false}).addTo(map);
+
+// เพิ่มเครื่องมือวัดระยะ
+var measureControl = new L.Control.Measure({ 
+    primaryLengthUnit: 'meters', 
+    localization: 'th' 
+});
+measureControl.addTo(map);	
         </script>        
     </body>
 </html>
