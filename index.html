@@ -44,17 +44,6 @@
     </head>
     <body>
 
-<script>
-        // รหัสผ่านคือ 1234 (Base64: MTIzNA==)
-        (function() {
-            var pass = prompt("กรุณาใส่รหัสผ่านเพื่อเข้าชมแผนที่เทศบาล:");
-            if (window.btoa(pass) !== "MTIzNA==") {
-                alert("รหัสผ่านไม่ถูกต้อง");
-                document.body.innerHTML = "<h1 style='text-align:center;margin-top:20%'>Access Denied</h1>";
-            }
-        })();
-    </script>
-
     <div id="map"></div>
     
     <button class="print-button" onclick="window.print()"><i class="fa fa-print"></i> พิมพ์แผนที่</button>
@@ -80,6 +69,24 @@
         <script src="data/2069_5.js"></script>
         <script src="data/ZoneA_6.js"></script>
         <script>
+
+	    // 1. ตรวจสอบรหัสผ่านก่อนทำอย่างอื่น
+        // รหัสผ่านคือ 1234 (Base64: MTIzNA==)
+        var pass = prompt("กรุณาใส่รหัสผ่านเพื่อเข้าชมแผนที่เทศบาล:");
+        
+        if (window.btoa(pass) !== "MTIzNA==") {
+            // ถ้าผิด ให้หยุดการทำงานและลบหน้าจอแผนที่ออกทันที
+            alert("รหัสผ่านไม่ถูกต้อง ระบบจะปิดการทำงาน");
+            document.getElementById('map').style.display = 'none'; // ซ่อนแผนที่
+            document.body.innerHTML = "<h1 style='text-align:center;margin-top:20%'>Access Denied: กรุณาติดต่อเจ้าหน้าที่ IT</h1>";
+            throw new Error("Incorrect Password"); // หยุด Script ไม่ให้ทำงานต่อ
+        }
+
+        // 2. ถ้าถูก โปรแกรมด้านล่างจะทำงานตามปกติ
+        var map = L.map('map', {
+            zoomControl:false, maxZoom:28, minZoom:1
+        }).fitBounds([[15.105459341496667,104.33157303867606],[15.11585806443425,104.35105268482329]]);
+			
         var map = L.map('map', {
             zoomControl:false, maxZoom:28, minZoom:1
         }).fitBounds([[15.103522274196575,104.33796229180007],[15.106186210215954,104.34228049460745]]);
