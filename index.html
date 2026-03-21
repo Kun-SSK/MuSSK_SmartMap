@@ -1,25 +1,25 @@
 <!doctype html>
 <html lang="en">
+	
+	
     <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
-        <meta name="mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <link rel="stylesheet" href="css/leaflet.css">
-        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
-        <link rel="stylesheet" href="css/qgis2web.css">
-        <link rel="stylesheet" href="css/fontawesome-all.min.css">
-        <link rel="stylesheet" href="css/leaflet.photon.css">
-        <style>
-        html, body, #map {
-            width: 100%;
-            height: 100%;
-            padding: 0;
-            margin: 0;
-        }
-        </style>
-        <title></title>
+      <meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="https://unpkg.com/leaflet-measure/dist/leaflet-measure.css">
+<script src="https://unpkg.com/leaflet-measure/dist/leaflet-measure.js"></script>
+<style>
+    /* ปุ่ม Print */
+    .print-button {
+        position: absolute; top: 70px; left: 10px; z-index: 1000;
+        background: white; padding: 5px 10px; border: 2px solid rgba(0,0,0,0.2);
+        border-radius: 4px; cursor: pointer; font-weight: bold;
+    }
+    /* โลโก้เทศบาลมุมขวา */
+    .map-logo {
+        position: absolute; bottom: 20px; right: 10px; z-index: 1000;
+        width: 80px; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.5));
+    }
+    @media print { .print-button, .leaflet-control-zoom, .leaflet-control-layers, .leaflet-control-measure { display: none !important; } }
+</style>
     </head>
     <body>
         <div id="map">
