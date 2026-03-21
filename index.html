@@ -42,6 +42,23 @@
 </style>
     </head>
     <body>
+
+<script>
+        // รหัสผ่านคือ 1234 (Base64: MTIzNA==)
+        (function() {
+            var pass = prompt("กรุณาใส่รหัสผ่านเพื่อเข้าชมแผนที่เทศบาล:");
+            if (window.btoa(pass) !== "MTIzNA==") {
+                alert("รหัสผ่านไม่ถูกต้อง");
+                document.body.innerHTML = "<h1 style='text-align:center;margin-top:20%'>Access Denied</h1>";
+            }
+        })();
+    </script>
+
+    <div id="map"></div>
+    
+    <button class="print-button" onclick="window.print()"><i class="fa fa-print"></i> พิมพ์แผนที่</button>
+    <img src="https://upload.wikimedia.org/wikipedia/th/a/a0/ตราเทศบาลเมืองศรีสะเกษ.png" class="map-logo" alt="Logo">
+		
         <div id="map">
         </div>
         <script src="js/qgis2web_expressions.js"></script>
