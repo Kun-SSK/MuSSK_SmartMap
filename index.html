@@ -463,22 +463,22 @@
                         <td colspan="2">' + (feature.properties['Longitude'] !== null ? autolinker.link(String(feature.properties['Longitude']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['ชนิด'] !== null ? autolinker.link(String(feature.properties['ชนิด']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['Type'] !== null ? autolinker.link(String(feature.properties['Type']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['กำลัง'] !== null ? autolinker.link(String(feature.properties['กำลัง']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['Watt'] !== null ? autolinker.link(String(feature.properties['Watt']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['รหัส'] !== null ? autolinker.link(String(feature.properties['รหัส']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['Code'] !== null ? autolinker.link(String(feature.properties['Code']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['ชุมชน'] !== null ? autolinker.link(String(feature.properties['ชุมชน']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['Community'] !== null ? autolinker.link(String(feature.properties['Community']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['ถนน'] !== null ? autolinker.link(String(feature.properties['ถนน']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['Road'] !== null ? autolinker.link(String(feature.properties['Road']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['หมายเหตุ'] !== null ? autolinker.link(String(feature.properties['หมายเหตุ']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['Remark'] !== null ? autolinker.link(String(feature.properties['Remark']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             var content = removeEmptyRowsFromPopupContent(popupContent, feature);
@@ -532,7 +532,9 @@ var overlayMaps = {
     "โครงข่ายถนน": layer_gis_road_2,
     "เส้นทางน้ำ": layer_gis_waterway_3,
     "ชุมชน": layer_community_Boundary_4,
-    "พิกัด Zone A (CCTV)": layer_ZoneA_6
+	"เสาไฟฟ้า ระยะที่ 2 (เขต 2)": layer_2069_5,
+    "เสาไฟฟ้า ระยะที่ 1 (Zone A)": layer_ZoneA_6
+	
 };
 L.control.layers(baseMaps, overlayMaps, {collapsed: false}).addTo(map);
 
