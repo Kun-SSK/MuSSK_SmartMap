@@ -178,6 +178,32 @@
     layer.bindPopup(popupContent, {maxWidth: 280});
     }
 
+        function pop_community_with_count(feature, layer) {
+    // 1. แปลงข้อมูล Leaflet เป็น GeoJSON format สำหรับ Turf.js
+    var polygonGeoJSON = feature; 
+    var pointsGeoJSON = json_2069_5; // หรือรวมไฟล์เสาไฟทั้งหมด
+
+    // 2. ใช้ Turf.js นับจุดที่อยู่ใน Polygon
+    var ptsWithin = turf.pointsWithinPolygon(pointsGeoJSON, polygonGeoJSON);
+    var count = ptsWithin.features.length;
+
+    // 3. สร้างเนื้อหา Popup
+    var content = `
+        <div style="font-family:sans-serif;">
+            <h3 style="margin:0; color:#8d5a99;">ชุมชน: ${feature.properties.community || 'ไม่ระบุชื่อ'}</h3>
+            <hr>
+            <p style="font-size:16px;">จำนวนเสาไฟฟ้าทั้งหมด: <b>${count}</b> ต้น</p>
+            <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                <tr>
+                    <th style="text-align:left; padding:5px; background:#f4f4f4;">รหัสชุมชน</th>
+                    <td>${feature.properties.Id || '-'}</td>
+                </tr>
+            </table>
+        </div>
+    `;
+    layer.bindPopup(content);
+}
+            
         // --- โหลดข้อมูล Layer พร้อมเรียกใช้ฟังก์ชัน Popup ---
 
         var layer_Municipal_Boundary_1 = L.geoJson(json_Municipal_Boundary_1, { 
@@ -197,7 +223,7 @@
 
         var layer_community_Boundary_4 = L.geoJson(json_community_Boundary_4, { 
             style: { color: "purple", weight: 1.5, fillOpacity: 0.2 },
-            onEachFeature: pop_generic 
+            onEachFeature: pop_community_with_count 
         }).addTo(map);
 
         var layer_ZoneA_6 = L.geoJson(json_ZoneA_6, {
