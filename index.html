@@ -180,18 +180,20 @@
             // ==========================================
             // 4. ฟีเจอร์ใหม่: คลิกตำแหน่งเพื่อนำทาง (Google Maps)
             // ==========================================
-            var navPopup = L.popup();
             map.on('click', function(e) {
-                var lat = e.latlng.lat;
-                var lng = e.latlng.lng;
-                var googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
-
-                var content = `<div style="text-align:center; font-family:sans-serif;">
-                                <strong>พิกัด: ${lat.toFixed(6)}, ${lng.toFixed(6)}</strong><br>
-                                <a href="${googleMapsUrl}" target="_blank" class="btn-navigation">
-                                <i class="fa fa-location-arrow"></i> นำทางด้วย Google Maps</a>
-                               </div>`;
-                navPopup.setLatLng(e.latlng).setContent(content).openOn(map);
+            var lat = e.latlng.lat;
+            var lng = e.latlng.lng;
+            
+            // URL ที่ถูกต้องสำหรับ Google Maps
+            var googleMapsUrl = "https://www.google.com/maps?q=" + lat + "," + lng;
+        
+            var content = "<div style='text-align:center;'>" +
+                          "<strong>พิกัด: " + lat.toFixed(6) + ", " + lng.toFixed(6) + "</strong><br>" +
+                          "<a href='" + googleMapsUrl + "' target='_blank' class='btn-navigation' " +
+                          "style='display:inline-block; margin-top:8px; background:#4285F4; color:white; padding:8px 15px; border-radius:4px; text-decoration:none;'> " +
+                          "นำทางด้วย Google Maps</a></div>";
+            
+            navPopup.setLatLng(e.latlng).setContent(content).openOn(map);
             });
 
             // ==========================================
