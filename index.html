@@ -180,20 +180,38 @@
             // --- ฟังก์ชันสำหรับสร้าง Popup จากข้อมูล Attribute ---
 
         function pop_generic(feature, layer) {
-            var popupContent = '<table style="width:100%; border-collapse:collapse; font-family: sans-serif; font-size:13px;">';
+            var popupContent = '<table style="width:100%; border-collapse:collapse; font-family:sans-serif; font-size:13px;">';
             
-            // --- 2. วนลูปแสดงเฉพาะ Attribute ที่เราเลือกไว้ใน displayAttributes ---
-            if (feature.properties) {
-                displayAttributes.forEach(function(key) {
-                    if (feature.properties[key] !== undefined) {
-                        var value = feature.properties[key] !== null ? feature.properties[key] : '-';
-                        popupContent += '<tr>' +
-                                        '<th style="text-align:left; padding:6px; border-bottom:1px solid #eee; background:#f9f9f9;">' + key + '</th>' +
-                                        '<td style="padding:6px; border-bottom:1px solid #eee;">' + value + '</td>' +
-                                        '</tr>';
-                    }
-                });
+            // กำหนดรายการ Attribute แยกตามชื่อ Layer (หรือเงื่อนไขอื่นๆ)
+            var fieldsToShow = [];
+            
+            // ตรวจสอบจากชื่อตัวแปร หรือคุณสมบัติเฉพาะใน feature เพื่อเลือกชุดข้อมูล
+            if (feature.properties.layer_gis_road_2) { 
+                // ขอบเขตเทศบาล
+                fieldsToShow = ["code", "width"]; 
+            } else
+            if (feature.properties.layer_community_Boundary_4) { 
+                // ถ้าเป็นข้อมูลชุมชน
+                fieldsToShow = ["Id", "community"]; 
+            } else if (feature.properties.layer_2069_5) { 
+                // ถ้าเป็นข้อมูลถนน
+                fieldsToShow = ["Road_ID", "Name", "description"]; 
+            } else {
+                // ค่าเริ่มต้น หากไม่ตรงกับเงื่อนไขข้างบน (แสดงทุกอย่าง)
+                fieldsToShow = Object.keys(feature.properties); 
             }
+        
+            // วนลูปแสดงเฉพาะฟิลด์ที่เลือกไว้ใน fieldsToShow
+            fieldsToShow.forEach(function(key) {
+                if (feature.properties[key] !== undefined) {
+                    var value = feature.properties[key] !== null ? feature.properties[key] : '-';
+                    popupContent += '<tr>' +
+                                    '<th style="text-align:left; padding:6px; border-bottom:1px solid #eee; background:#f4f4f4;">' + key + '</th>' +
+                                    '<td style="padding:6px; border-bottom:1px solid #eee;">' + value + '</td>' +
+                                    '</tr>';
+                }
+            });
+            
             popupContent += '</table>';
             
             // เพิ่มปุ่มนำทาง Google Maps ต่อท้ายข้อมูล Attribute
@@ -221,23 +239,23 @@
         // 1. ขอบเขตเทศบาล
         var boundary = L.geoJson(json_Municipal_Boundary_1, { 
             style: { color: "#333", weight: 2, fillOpacity: 0.1 },
-            //onEachFeature: pop_generic 
+            onEachFeature: pop_generic 
         }).addTo(map);
 
         // 2. ถนน
         var roads = L.geoJson(json_gis_road_2, { 
             style: { color: "blue", weight: 1.5 },
-            //onEachFeature: pop_generic 
+            onEachFeature: pop_generic 
         }).addTo(map);
 
         // 3. เส้นทางน้ำ
         var waterway = L.geoJson(json_gis_waterway_3, { 
             style: { color: "blue", weight: 1.5 },
-            //onEachFeature: pop_generic 
+            onEachFeature: pop_generic 
         }).addTo(map);
 
         // 4. ขอบเขตชุมชน
-        var displayAttributes = ["Id", "community"];    
+            
         var waterway = L.geoJson(json_gis_community_Boundary_4, { 
             style: { color: "blue", weight: 1.5 },
             onEachFeature: pop_generic 
@@ -248,7 +266,7 @@
             pointToLayer: function (f, l) {
                 return L.circleMarker(l, { radius: 6, fillColor: "#ff7800", color: "#000", weight: 1, fillOpacity: 0.9 });
             },
-            //onEachFeature: pop_generic
+            onEachFeature: pop_generic
         }).addTo(map);
 
         // 6. เสาไฟฟ้า ระยะที่ 2
