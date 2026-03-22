@@ -188,7 +188,7 @@
             // 2. ข้อมูลชุมชน (เช็คว่ามีคอลัมน์ community ไหม)
             fieldsToShow = ["Id", "community"]; 
         } 
-        else if (feature.properties.์Name) { 
+        else if (feature.properties.Name) { 
             // 3. เสาไฟฟ้า (เช็คว่ามีคอลัมน์ Road_ID ไหม)
             fieldsToShow = ["Name", "description"]; 
         } 
@@ -273,7 +273,7 @@
             pointToLayer: function (f, l) {
                 return L.circleMarker(l, { radius: 6, fillColor: "#6d7a7d", color: "#000", weight: 1, fillOpacity: 0.9 });
             },
-            //onEachFeature: pop_generic
+            onEachFeature: pop_generic
         }).addTo(map);
             
             // ==========================================
