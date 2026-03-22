@@ -207,19 +207,19 @@
         // 1. ขอบเขตเทศบาล
         var boundary = L.geoJson(json_Municipal_Boundary_1, { 
             style: { color: "#333", weight: 2, fillOpacity: 0.1 },
-            onEachFeature: pop_generic 
+            //onEachFeature: pop_generic 
         }).addTo(map);
 
         // 2. ถนน
         var roads = L.geoJson(json_gis_road_2, { 
             style: { color: "blue", weight: 1.5 },
-            onEachFeature: pop_generic 
+            //onEachFeature: pop_generic 
         }).addTo(map);
 
         // 3. เส้นทางน้ำ
         var waterway = L.geoJson(json_gis_waterway_3, { 
             style: { color: "blue", weight: 1.5 },
-            onEachFeature: pop_generic 
+            //onEachFeature: pop_generic 
         }).addTo(map);
 
         // 4. ขอบเขตชุมชน
