@@ -216,7 +216,19 @@
             onEachFeature: pop_generic 
         }).addTo(map);
 
-        // 3. เสาไฟฟ้า ระยะที่ 1 (Zone A)
+        // 3. เส้นทางน้ำ
+        var waterway = L.geoJson(json_gis_waterway_3, { 
+            style: { color: "blue", weight: 1.5 },
+            onEachFeature: pop_generic 
+        }).addTo(map);
+
+        // 4. ขอบเขตชุมชน
+        var waterway = L.geoJson(json_gis_community_Boundary_4, { 
+            style: { color: "blue", weight: 1.5 },
+            onEachFeature: pop_generic 
+        }).addTo(map);
+            
+        // 5. เสาไฟฟ้า ระยะที่ 1 (Zone A)
         var zoneA = L.geoJson(json_ZoneA_6, {
             pointToLayer: function (f, l) {
                 return L.circleMarker(l, { radius: 6, fillColor: "#ff7800", color: "#000", weight: 1, fillOpacity: 0.9 });
@@ -224,7 +236,7 @@
             onEachFeature: pop_generic
         }).addTo(map);
 
-        // 4. เสาไฟฟ้า ระยะที่ 2
+        // 6. เสาไฟฟ้า ระยะที่ 2
         var pole2 = L.geoJson(json_2069_5, {
             pointToLayer: function (f, l) {
                 return L.circleMarker(l, { radius: 6, fillColor: "#6d7a7d", color: "#000", weight: 1, fillOpacity: 0.9 });
@@ -235,7 +247,7 @@
             // ==========================================
             // 4. ฟีเจอร์ใหม่: คลิกตำแหน่งเพื่อนำทาง (Google Maps)
             // ==========================================
-            map.on('click', function(e) {
+            /*map.on('click', function(e) {
             var lat = e.latlng.lat;
             var lng = e.latlng.lng;
             
@@ -250,7 +262,7 @@
             
             navPopup.setLatLng(e.latlng).setContent(content).openOn(map);
             });
-
+*/
             // ==========================================
             // 5. ส่วนควบคุมแผนที่ (Controls)
             // ==========================================
