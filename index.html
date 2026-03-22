@@ -177,29 +177,43 @@
                 }
             }).addTo(map);
 
-// --- ฟังก์ชันสำหรับสร้าง Popup จากข้อมูล Attribute ---
-        function pop_generic(feature, layer) {
-            var popupContent = '<table style="width:100%; border-collapse:collapse;">';
-            
-            // ดึงข้อมูลทุกอย่างที่มีใน Attribute (Properties) มาโชว์
-            if (feature.properties) {
-                for (var key in feature.properties) {
-                    var value = feature.properties[key] !== null ? feature.properties[key] : '-';
-                    popupContent += '<tr><th style="text-align:left; padding:4px; border-bottom:1px solid #eee;">' + key + '</th>' +
-                                    '<td style="padding:4px; border-bottom:1px solid #eee;">' + value + '</td></tr>';
-                }
-            }
+            // --- ฟังก์ชันสำหรับสร้าง Popup จากข้อมูล Attribute ---
 
+        function pop_generic(feature, layer) {
+            var popupContent = '<table style="width:100%; border-collapse:collapse; font-family: sans-serif; font-size:13px;">';
+            
+            // --- 2. วนลูปแสดงเฉพาะ Attribute ที่เราเลือกไว้ใน displayAttributes ---
+            if (feature.properties) {
+                displayAttributes.forEach(function(key) {
+                    if (feature.properties[key] !== undefined) {
+                        var value = feature.properties[key] !== null ? feature.properties[key] : '-';
+                        popupContent += '<tr>' +
+                                        '<th style="text-align:left; padding:6px; border-bottom:1px solid #eee; background:#f9f9f9;">' + key + '</th>' +
+                                        '<td style="padding:6px; border-bottom:1px solid #eee;">' + value + '</td>' +
+                                        '</tr>';
+                    }
+                });
+            }
+            popupContent += '</table>';
+            
             // เพิ่มปุ่มนำทาง Google Maps ต่อท้ายข้อมูล Attribute
-            var lat = layer.getLatLng ? layer.getLatLng().lat : (feature.geometry.coordinates[1]);
-            var lng = layer.getLatLng ? layer.getLatLng().lng : (feature.geometry.coordinates[0]);
-            var gMapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
-            
-            popupContent += '</table><div style="text-align:center; margin-top:10px;">' +
-                            '<a href="' + gMapsUrl + '" target="_blank" class="nav-btn" style="background:#4285F4; color:white; padding:5px 10px; border-radius:4px; text-decoration:none; font-size:12px;">' +
-                            '<i class="fa fa-location-arrow"></i> นำทางด้วย Google Maps</a></div>';
-            
-            layer.bindPopup(popupContent, {maxHeight: 400});
+            var lat = null;
+            var lng = null;
+
+            // กรณีที่ 1: ดึงจาก Attribute (ต้องพิมพ์ชื่อ Field ให้ตรงเป๊ะ เช่น Lattitude / Longtitude)
+            if (feature.properties.Lattitude && feature.properties.Longtitude) {
+                lat = feature.properties.Lattitude;
+                lng = feature.properties.Longtitude;
+            } 
+            // กรณีที่ 2: ถ้าใน Attribute ไม่มี ให้ดึงจากตำแหน่งพิกัดจริงบนแผนที่ (Geometry)
+            else if (layer.getLatLng) {
+                lat = layer.getLatLng().lat;
+                lng = layer.getLatLng().lng;
+            } else if (feature.geometry && feature.geometry.coordinates) {
+                // สำหรับเส้น (Line) หรือพื้นที่ (Polygon) ให้ใช้จุดแรก
+                lat = feature.geometry.coordinates[1];
+                lng = feature.geometry.coordinates[0];
+            }
         }
 
         // --- โหลดข้อมูล Layer พร้อมเรียกใช้ฟังก์ชัน Popup ---
@@ -223,6 +237,7 @@
         }).addTo(map);
 
         // 4. ขอบเขตชุมชน
+        var displayAttributes = ["Id", "community"];    
         var waterway = L.geoJson(json_gis_community_Boundary_4, { 
             style: { color: "blue", weight: 1.5 },
             onEachFeature: pop_generic 
@@ -233,7 +248,7 @@
             pointToLayer: function (f, l) {
                 return L.circleMarker(l, { radius: 6, fillColor: "#ff7800", color: "#000", weight: 1, fillOpacity: 0.9 });
             },
-            onEachFeature: pop_generic
+            //onEachFeature: pop_generic
         }).addTo(map);
 
         // 6. เสาไฟฟ้า ระยะที่ 2
@@ -241,7 +256,7 @@
             pointToLayer: function (f, l) {
                 return L.circleMarker(l, { radius: 6, fillColor: "#6d7a7d", color: "#000", weight: 1, fillOpacity: 0.9 });
             },
-            onEachFeature: pop_generic
+            //onEachFeature: pop_generic
         }).addTo(map);
             
             // ==========================================
