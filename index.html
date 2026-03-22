@@ -231,12 +231,9 @@
     // --- สำคัญมาก: สั่งให้ Layer ผูกกับเนื้อหา Popup ---
     layer.bindPopup(popupContent, {maxWidth: 280});
     }
-        
 
         // --- โหลดข้อมูล Layer พร้อมเรียกใช้ฟังก์ชัน Popup ---
-        
-        // --- โหลดข้อมูล Layer (แก้ไขชื่อตัวแปรให้ตรงกับ Control) ---
-        
+
         var layer_Municipal_Boundary_1 = L.geoJson(json_Municipal_Boundary_1, { 
             style: { color: "#333", weight: 2, fillOpacity: 0.1 },
             onEachFeature: pop_generic 
@@ -268,11 +265,11 @@
             pointToLayer: function (f, l) {
                 return L.circleMarker(l, { radius: 6, fillColor: "#6d7a7d", color: "#000", weight: 1, fillOpacity: 0.9 });
             },
-            onEachFeature: pop_generic // เปิดใช้งาน Popup ให้ตัวนี้ด้วย
+            onEachFeature: pop_generic 
         }).addTo(map);
 
         // ==========================================
-        // 5. ส่วนควบคุมแผนที่ (แก้ไขชื่อให้ตรงกับตัวแปรด้านบน)
+        // 5. ส่วนควบคุมแผนที่ 
         // ==========================================
         var baseMaps = { "แผนที่พื้นฐาน (OSM)": layer_OpenStreetMap_0 };
         var overlayMaps = {
@@ -289,27 +286,6 @@
         
         var measureControl = new L.Control.Measure({ primaryLengthUnit: 'meters', localization: 'th' });
         measureControl.addTo(map);
-            
-            // ==========================================
-            // 4. ฟีเจอร์ใหม่: คลิกตำแหน่งเพื่อนำทาง (Google Maps)
-            // ==========================================
-            /*map.on('click', function(e) {
-            var lat = e.latlng.lat;
-            var lng = e.latlng.lng;
-            
-            // URL ที่ถูกต้องสำหรับ Google Maps
-            var googleMapsUrl = "https://www.google.com/maps?q=" + lat + "," + lng;
-        
-            var content = "<div style='text-align:center;'>" +
-                          "<strong>พิกัด: " + lat.toFixed(6) + ", " + lng.toFixed(6) + "</strong><br>" +
-                          "<a href='" + googleMapsUrl + "' target='_blank' class='btn-navigation' " +
-                          "style='display:inline-block; margin-top:8px; background:#4285F4; color:white; padding:8px 15px; border-radius:4px; text-decoration:none;'> " +
-                          "นำทางด้วย Google Maps</a></div>";
-            
-            navPopup.setLatLng(e.latlng).setContent(content).openOn(map);
-            });
-*/
-
-        </script>
+         </script>
     </body>
 </html>
