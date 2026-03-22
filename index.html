@@ -12,7 +12,7 @@
         <link rel="stylesheet" href="css/fontawesome-all.min.css">
         <link rel="stylesheet" href="css/leaflet.photon.css">
         <link rel="stylesheet" href="https://unpkg.com/leaflet-measure/dist/leaflet-measure.css">
-        
+        <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
         <style>
             html, body, #map {
                 width: 100%;
@@ -25,6 +25,29 @@
             #map, .print-button, .map-logo {
                 display: none;
             }
+            
+            /* แผงสถิติสรุปยอด */
+            .stats-panel {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                z-index: 1000;
+                background: white;
+                padding: 15px;
+                border-radius: 8px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                width: 250px;
+                max-height: 400px;
+                overflow-y: auto;
+                font-family: 'Sarabun', sans-serif;
+                display: none; /* ซ่อนไว้ก่อนจนกว่าจะล็อกอิน */
+            }
+            .stats-panel h4 { margin: 0 0 10px 0; color: #333; border-bottom: 2px solid #8d5a99; padding-bottom: 5px; }
+            .stats-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+            .stats-table th { text-align: left; background: #f8f9fa; padding: 5px; }
+            .stats-table td { padding: 5px; border-bottom: 1px solid #eee; }
+            .total-row { font-weight: bold; background: #eee !important; }
+            
             /* ปุ่ม Print */
             .print-button {
                 position: absolute; top: 70px; left: 10px; z-index: 1000;
@@ -50,9 +73,22 @@
     <body>
 
         <div id="map"></div>
+ 
         <button id="printBtn" class="print-button" onclick="window.print()"><i class="fa fa-print"></i> พิมพ์แผนที่</button>
         <img id="logoImg" src="Logo เทศบาลเมืองศรีสะเกษ.png" class="map-logo" alt="Sisaket Municipality Logo">
-
+        <div id="statsPanel" class="stats-panel">
+            <h4><i class="fa fa-chart-bar"></i> สรุปจำนวนเสาไฟฟ้า</h4>
+            <table id="statsTable" class="stats-table">
+                <thead>
+                    <tr>
+                        <th>ชื่อชุมชน</th>
+                        <th style="text-align:right;">จำนวน (ต้น)</th>
+                    </tr>
+                </thead>
+                <tbody id="statsBody">
+                    </tbody>
+            </table>
+        </div>
         <script src="js/qgis2web_expressions.js"></script>
         <script src="js/leaflet.js"></script>
         <script src="js/L.Control.Layers.Tree.min.js"></script>
@@ -261,6 +297,50 @@
         L.control.layers(baseMaps, overlayMaps, {collapsed: false}).addTo(map);
         L.control.zoom({ position: 'topleft' }).addTo(map);
         new L.Control.Measure({ primaryLengthUnit: 'meters', localization: 'th' }).addTo(map);
+
+        function updateStats() {
+            // แสดงแผงสถิติเมื่อ Login สำเร็จ
+            document.getElementById('statsPanel').style.display = 'block';
+        
+            var statsBody = document.getElementById('statsBody');
+            statsBody.innerHTML = ""; // ล้างข้อมูลเก่า
+            
+            var grandTotal = 0;
+            // รวมข้อมูลเสาไฟจากทั้ง 2 Layer (Zone A และ ระยะที่ 2)
+            var allPoles = {
+                type: "FeatureCollection",
+                features: json_ZoneA_6.features.concat(json_2069_5.features)
+            };
+        
+            // วนลูปตามรายชื่อชุมชน
+            json_community_Boundary_4.features.forEach(function(community) {
+                var name = community.properties.community || "ไม่ระบุชื่อ";
+                
+                // ใช้ Turf.js นับจุดในพื้นที่ชุมชนนั้นๆ
+                var ptsWithin = turf.pointsWithinPolygon(allPoles, community);
+                var count = ptsWithin.features.length;
+                grandTotal += count;
+        
+                // เพิ่มแถวลงในตาราง
+                var row = `<tr>
+                            <td>${name}</td>
+                            <td style="text-align:right;">${count.toLocaleString()}</td>
+                           </tr>`;
+                statsBody.innerHTML += row;
+            });
+        
+            // เพิ่มแถวสรุปรวมท้ายตาราง
+            statsBody.innerHTML += `<tr class="total-row">
+                                        <td>รวมทั้งหมด</td>
+                                        <td style="text-align:right;">${grandTotal.toLocaleString()} ต้น</td>
+                                    </tr>`;
+        }
+        
+        // เรียกใช้ฟังก์ชันหลังจากตรวจสอบรหัสผ่านผ่านแล้ว
+        if (window.btoa(pass) === "MTIzNA==") {
+            updateStats(); 
+        }
+            
          </script>
     </body>
 </html>
