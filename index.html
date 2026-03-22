@@ -27,26 +27,25 @@
             }
             
             /* แผงสถิติสรุปยอด */
-            .stats-panel {
-                position: absolute;
-                top: 20px;
-                right: 20px;
-                z-index: 1000;
-                background: white;
-                padding: 15px;
-                border-radius: 8px;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-                width: 250px;
-                max-height: 400px;
-                overflow-y: auto;
-                font-family: 'Sarabun', sans-serif;
-                display: none; /* ซ่อนไว้ก่อนจนกว่าจะล็อกอิน */
+           .stats-panel {
+                width: 320px; /* ขยายขนาดรองรับ % */
             }
-            .stats-panel h4 { margin: 0 0 10px 0; color: #333; border-bottom: 2px solid #8d5a99; padding-bottom: 5px; }
-            .stats-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-            .stats-table th { text-align: left; background: #f8f9fa; padding: 5px; }
-            .stats-table td { padding: 5px; border-bottom: 1px solid #eee; }
-            .total-row { font-weight: bold; background: #eee !important; }
+            .stats-table tr.clickable:hover {
+                background-color: #f0e6f2;
+                cursor: pointer;
+            }
+            .btn-export {
+                width: 100%;
+                margin-top: 10px;
+                background-color: #28a745;
+                color: white;
+                border: none;
+                padding: 8px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-weight: bold;
+            }
+            .btn-export:hover { background-color: #218838; }
             
             /* ปุ่ม Print */
             .print-button {
@@ -82,12 +81,13 @@
                 <thead>
                     <tr>
                         <th>ชื่อชุมชน</th>
-                        <th style="text-align:right;">จำนวน (ต้น)</th>
+                        <th style="text-align:right;">จำนวน</th>
+                        <th style="text-align:right;">%</th>
                     </tr>
                 </thead>
-                <tbody id="statsBody">
-                    </tbody>
+                <tbody id="statsBody"></tbody>
             </table>
+            <button class="btn-export" onclick="exportToExcel()"><i class="fa fa-file-excel"></i> ส่งออกเป็น Excel</button>
         </div>
         <script src="js/qgis2web_expressions.js"></script>
         <script src="js/leaflet.js"></script>
@@ -214,33 +214,7 @@
     }
     layer.bindPopup(popupContent, {maxWidth: 280});
     }
-/*
-        function pop_community_with_count(feature, layer) {
-    // 1. แปลงข้อมูล Leaflet เป็น GeoJSON format สำหรับ Turf.js
-    var polygonGeoJSON = feature; 
-    var pointsGeoJSON = json_2069_5; // หรือรวมไฟล์เสาไฟทั้งหมด
 
-    // 2. ใช้ Turf.js นับจุดที่อยู่ใน Polygon
-    var ptsWithin = turf.pointsWithinPolygon(pointsGeoJSON, polygonGeoJSON);
-    var count = ptsWithin.features.length;
-
-    // 3. สร้างเนื้อหา Popup
-    var content = `
-        <div style="font-family:sans-serif;">
-            <h3 style="margin:0; color:#8d5a99;">ชุมชน: ${feature.properties.community || 'ไม่ระบุชื่อ'}</h3>
-            <hr>
-            <p style="font-size:16px;">จำนวนเสาไฟฟ้าทั้งหมด: <b>${count}</b> ต้น</p>
-            <table style="width:100%; border-collapse:collapse; font-size:12px;">
-                <tr>
-                    <th style="text-align:left; padding:5px; background:#f4f4f4;">รหัสชุมชน</th>
-                    <td>${feature.properties.Id || '-'}</td>
-                </tr>
-            </table>
-        </div>
-    `;
-    layer.bindPopup(content);
-}
- */           
         // --- โหลดข้อมูล Layer พร้อมเรียกใช้ฟังก์ชัน Popup ---
 
         var layer_Municipal_Boundary_1 = L.geoJson(json_Municipal_Boundary_1, { 
@@ -298,47 +272,83 @@
         L.control.zoom({ position: 'topleft' }).addTo(map);
         new L.Control.Measure({ primaryLengthUnit: 'meters', localization: 'th' }).addTo(map);
 
-        function updateStats() {
-            // แสดงแผงสถิติเมื่อ Login สำเร็จ
-            document.getElementById('statsPanel').style.display = 'block';
+        // ฟังก์ชันสำหรับส่งออก Excel อย่างง่าย (CSV)
+        function exportToExcel() {
+            let csv = "\uFEFFชื่อชุมชน,จำนวนเสาไฟ,เปอร์เซ็นต์\n";
+            const rows = document.querySelectorAll("#statsBody tr");
+            rows.forEach(row => {
+                const cols = row.querySelectorAll("td");
+                if (cols.length > 0) {
+                    csv += `${cols[0].innerText},${cols[1].innerText.replace(/,/g,'')},${cols[2].innerText}\n`;
+                }
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "สรุปเสาไฟฟ้า_เทศบาลเมืองศรีสะเกษ.csv";
+            link.click();
+        }
         
+        function updateStats() {
+            document.getElementById('statsPanel').style.display = 'block';
             var statsBody = document.getElementById('statsBody');
-            statsBody.innerHTML = ""; // ล้างข้อมูลเก่า
+            statsBody.innerHTML = ""; 
             
-            var grandTotal = 0;
-            // รวมข้อมูลเสาไฟจากทั้ง 2 Layer (Zone A และ ระยะที่ 2)
+            // 1. รวมข้อมูลจุดเสาไฟ
             var allPoles = {
                 type: "FeatureCollection",
                 features: json_ZoneA_6.features.concat(json_2069_5.features)
             };
         
-            // วนลูปตามรายชื่อชุมชน
+            // 2. คำนวณข้อมูลและเก็บลง Array เพื่อนำมาจัดเรียง
+            var summaryData = [];
+            var grandTotal = 0;
+        
             json_community_Boundary_4.features.forEach(function(community) {
-                var name = community.properties.community || "ไม่ระบุชื่อ";
-                
-                // ใช้ Turf.js นับจุดในพื้นที่ชุมชนนั้นๆ
                 var ptsWithin = turf.pointsWithinPolygon(allPoles, community);
                 var count = ptsWithin.features.length;
                 grandTotal += count;
-        
-                // เพิ่มแถวลงในตาราง
-                var row = `<tr>
-                            <td>${name}</td>
-                            <td style="text-align:right;">${count.toLocaleString()}</td>
-                           </tr>`;
-                statsBody.innerHTML += row;
+                summaryData.push({
+                    name: community.properties.community || "ไม่ระบุชื่อ",
+                    count: count,
+                    layer: community // เก็บ layer ไว้สำหรับซูม
+                });
             });
         
-            // เพิ่มแถวสรุปรวมท้ายตาราง
-            statsBody.innerHTML += `<tr class="total-row">
-                                        <td>รวมทั้งหมด</td>
-                                        <td style="text-align:right;">${grandTotal.toLocaleString()} ต้น</td>
-                                    </tr>`;
-        }
+            // 3. จัดเรียงลำดับจากมากไปน้อย
+            summaryData.sort((a, b) => b.count - a.count);
         
-        // เรียกใช้ฟังก์ชันหลังจากตรวจสอบรหัสผ่านผ่านแล้ว
-        if (window.btoa(pass) === "MTIzNA==") {
-            updateStats(); 
+            // 4. แสดงผลลงตาราง
+            summaryData.forEach(function(item) {
+                var percent = grandTotal > 0 ? ((item.count / grandTotal) * 100).toFixed(1) : 0;
+                var row = document.createElement('tr');
+                row.className = "clickable";
+                row.innerHTML = `
+                    <td>${item.name}</td>
+                    <td style="text-align:right;">${item.count.toLocaleString()}</td>
+                    <td style="text-align:right; color:#666;">${percent}%</td>
+                `;
+                
+                // 5. คลิกชื่อแล้วซูมไปที่ชุมชน
+                row.onclick = function() {
+                    var leafletLayer = L.geoJson(item.layer);
+                    map.fitBounds(leafletLayer.getBounds(), { padding: [50, 50] });
+                    // ไฮไลท์ชุมชนที่เลือกสั้นๆ
+                    L.geoJson(item.layer, {
+                        style: { color: 'yellow', weight: 5, fillOpacity: 0.5 }
+                    }).addTo(map).fadeOut(2000); // ต้องมีปลั๊กอิน fadeOut หรือลบออกเอง
+                };
+                
+                statsBody.appendChild(row);
+            });
+        
+            // เพิ่มแถวรวม
+            var footer = `<tr class="total-row">
+                            <td>รวมทั้งหมด</td>
+                            <td style="text-align:right;">${grandTotal.toLocaleString()}</td>
+                            <td style="text-align:right;">100%</td>
+                          </tr>`;
+            statsBody.innerHTML += footer;
         }
             
          </script>
