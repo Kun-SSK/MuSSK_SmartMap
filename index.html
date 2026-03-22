@@ -184,17 +184,13 @@
     
         // --- ตรวจสอบเงื่อนไขการเลือก Attribute ตามโครงสร้างข้อมูลจริง ---
         // หมายเหตุ: ชื่อคอลัมน์ใน "" ต้องตรงกับหัวตารางในไฟล์ .js (QGIS) เป๊ะๆ
-        if (feature.properties.code && feature.properties.width) { 
-            // 1. ถนน (เช็คว่ามีคอลัมน์ code และ width ไหม)
-            fieldsToShow = ["code", "width"]; 
-        } 
-        else if (feature.properties.community) { 
+        if (feature.properties.community) { 
             // 2. ข้อมูลชุมชน (เช็คว่ามีคอลัมน์ community ไหม)
             fieldsToShow = ["Id", "community"]; 
         } 
-        else if (feature.properties.Road_ID) { 
+        else if (feature.properties.์Name) { 
             // 3. เสาไฟฟ้า (เช็คว่ามีคอลัมน์ Road_ID ไหม)
-            fieldsToShow = ["Road_ID", "Name", "description"]; 
+            fieldsToShow = ["Name", "description"]; 
         } 
         else {
             // 4. Layer อื่นๆ หรือถ้าไม่ตรงเงื่อนไขเลย ให้โชว์ 3 คอลัมน์แรกที่มี
