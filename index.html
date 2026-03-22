@@ -235,46 +235,60 @@
 
         // --- โหลดข้อมูล Layer พร้อมเรียกใช้ฟังก์ชัน Popup ---
         
-        // 1. ขอบเขตเทศบาล
-        var boundary = L.geoJson(json_Municipal_Boundary_1, { 
+        // --- โหลดข้อมูล Layer (แก้ไขชื่อตัวแปรให้ตรงกับ Control) ---
+        
+        var layer_Municipal_Boundary_1 = L.geoJson(json_Municipal_Boundary_1, { 
             style: { color: "#333", weight: 2, fillOpacity: 0.1 },
             onEachFeature: pop_generic 
         }).addTo(map);
 
-        // 2. ถนน
-        var roads = L.geoJson(json_gis_road_2, { 
+        var layer_gis_road_2 = L.geoJson(json_gis_road_2, { 
             style: { color: "blue", weight: 1.5 },
             onEachFeature: pop_generic 
         }).addTo(map);
 
-        // 3. เส้นทางน้ำ
-        var waterway = L.geoJson(json_gis_waterway_3, { 
-            style: { color: "blue", weight: 1.5 },
+        var layer_gis_waterway_3 = L.geoJson(json_gis_waterway_3, { 
+            style: { color: "#3bcdd7", weight: 1.5 },
             onEachFeature: pop_generic 
         }).addTo(map);
 
-        // 4. ขอบเขตชุมชน
-            
-        var community = L.geoJson(json_gis_community_Boundary_4, { 
-            style: { color: "blue", weight: 1.5 },
+        var layer_community_Boundary_4 = L.geoJson(json_community_Boundary_4, { 
+            style: { color: "purple", weight: 1.5, fillOpacity: 0.2 },
             onEachFeature: pop_generic 
         }).addTo(map);
-            
-        // 5. เสาไฟฟ้า ระยะที่ 1 (Zone A)
-        var zoneA = L.geoJson(json_ZoneA_6, {
+
+        var layer_ZoneA_6 = L.geoJson(json_ZoneA_6, {
             pointToLayer: function (f, l) {
                 return L.circleMarker(l, { radius: 6, fillColor: "#ff7800", color: "#000", weight: 1, fillOpacity: 0.9 });
             },
             onEachFeature: pop_generic
         }).addTo(map);
 
-        // 6. เสาไฟฟ้า ระยะที่ 2
-        var pole2 = L.geoJson(json_2069_5, {
+        var layer_2069_5 = L.geoJson(json_2069_5, {
             pointToLayer: function (f, l) {
                 return L.circleMarker(l, { radius: 6, fillColor: "#6d7a7d", color: "#000", weight: 1, fillOpacity: 0.9 });
             },
-            onEachFeature: pop_generic
+            onEachFeature: pop_generic // เปิดใช้งาน Popup ให้ตัวนี้ด้วย
         }).addTo(map);
+
+        // ==========================================
+        // 5. ส่วนควบคุมแผนที่ (แก้ไขชื่อให้ตรงกับตัวแปรด้านบน)
+        // ==========================================
+        var baseMaps = { "แผนที่พื้นฐาน (OSM)": layer_OpenStreetMap_0 };
+        var overlayMaps = {
+            "ขอบเขตเทศบาล": layer_Municipal_Boundary_1,
+            "โครงข่ายถนน": layer_gis_road_2,
+            "เส้นทางน้ำ": layer_gis_waterway_3,
+            "ชุมชน": layer_community_Boundary_4,
+            "เสาไฟฟ้า ระยะที่ 2": layer_2069_5,
+            "เสาไฟฟ้า ระยะที่ 1 (Zone A)": layer_ZoneA_6
+        };
+        
+        L.control.layers(baseMaps, overlayMaps, {collapsed: false}).addTo(map);
+        L.control.zoom({ position: 'topleft' }).addTo(map);
+        
+        var measureControl = new L.Control.Measure({ primaryLengthUnit: 'meters', localization: 'th' });
+        measureControl.addTo(map);
             
             // ==========================================
             // 4. ฟีเจอร์ใหม่: คลิกตำแหน่งเพื่อนำทาง (Google Maps)
@@ -295,24 +309,6 @@
             navPopup.setLatLng(e.latlng).setContent(content).openOn(map);
             });
 */
-            // ==========================================
-            // 5. ส่วนควบคุมแผนที่ (Controls)
-            // ==========================================
-            var baseMaps = { "แผนที่พื้นฐาน (OSM)": layer_OpenStreetMap_0 };
-            var overlayMaps = {
-                "ขอบเขตเทศบาล": layer_Municipal_Boundary_1,
-                "โครงข่ายถนน": layer_gis_road_2,
-                "เส้นทางน้ำ": layer_gis_waterway_3,
-                "ชุมชน": layer_community_Boundary_4,
-                "เสาไฟฟ้า ระยะที่ 2": layer_2069_5,
-                "เสาไฟฟ้า ระยะที่ 1 (Zone A)": layer_ZoneA_6
-            };
-            
-            L.control.layers(baseMaps, overlayMaps, {collapsed: false}).addTo(map);
-            L.control.zoom({ position: 'topleft' }).addTo(map);
-            
-            var measureControl = new L.Control.Measure({ primaryLengthUnit: 'meters', localization: 'th' });
-            measureControl.addTo(map);
 
         </script>
     </body>
