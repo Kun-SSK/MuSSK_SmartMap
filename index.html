@@ -45,7 +45,7 @@
             }
             @media print { .print-button, .leaflet-control-zoom, .leaflet-control-layers, .leaflet-control-measure { display: none !important; } }
         </style>
-        <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+        //<script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
     </head>
     <body>
 
@@ -178,7 +178,7 @@
     }
     layer.bindPopup(popupContent, {maxWidth: 280});
     }
-
+/*
         function pop_community_with_count(feature, layer) {
     // 1. แปลงข้อมูล Leaflet เป็น GeoJSON format สำหรับ Turf.js
     var polygonGeoJSON = feature; 
@@ -204,7 +204,7 @@
     `;
     layer.bindPopup(content);
 }
-            
+ */           
         // --- โหลดข้อมูล Layer พร้อมเรียกใช้ฟังก์ชัน Popup ---
 
         var layer_Municipal_Boundary_1 = L.geoJson(json_Municipal_Boundary_1, { 
@@ -224,7 +224,7 @@
 
         var layer_community_Boundary_4 = L.geoJson(json_community_Boundary_4, { 
             style: { color: "purple", weight: 1.5, fillOpacity: 0.2 },
-            onEachFeature: pop_community_with_count 
+            onEachFeature: pop_generic //pop_community_with_count 
         }).addTo(map);
 
         var layer_ZoneA_6 = L.geoJson(json_ZoneA_6, {
